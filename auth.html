@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication | Veltrix Capital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#00e1ff',
+                            green: '#00ff88',
+                            dark: '#070b14',
+                            card: '#111827',
+                            input: '#1f2937'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #070b14;
+            color: #ffffff;
+            background-image: 
+                radial-gradient(circle at top left, rgba(0, 225, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at bottom right, rgba(0, 255, 136, 0.05) 0%, transparent 40%);
+            min-height: 100vh;
+        }
+        .auth-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 225, 255, 0.05);
+        }
+        .input-field {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .input-field:focus-within {
+            border-color: #00e1ff;
+            box-shadow: 0 0 15px rgba(0, 225, 255, 0.2);
+            background: rgba(31, 41, 55, 0.8);
+        }
+        /* Toggle mechanism */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <!-- Back to Home -->
+    <a href="index.html" class="absolute top-6 left-6 text-gray-400 hover:text-white flex items-center gap-2 transition-colors z-10">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="w-full max-w-md auth-card rounded-2xl p-8 relative overflow-hidden z-10 mt-12 mb-12">
+        <!-- Glowing top border accent -->
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-blue to-brand-green"></div>
+
+        <!-- Logo -->
+        <div class="flex flex-col items-center mb-8">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-blue to-brand-green flex items-center justify-center text-brand-dark font-display font-bold text-2xl mb-3 shadow-[0_0_15px_rgba(0,225,255,0.4)]">
+                V
+            </div>
+            <h1 class="font-display font-bold text-2xl tracking-tight text-white">Veltrix<span class="text-brand-blue">Capital</span></h1>
+            <p class="text-gray-400 text-sm mt-1">Secure Client Portal</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex bg-gray-900/50 rounded-lg p-1 mb-8 border border-white/5">
+            <button onclick="switchTab('login')" id="tab-login" class="flex-1 py-2 text-sm font-medium rounded-md bg-brand-input text-white shadow transition-all">Log In</button>
+            <button onclick="switchTab('signup')" id="tab-signup" class="flex-1 py-2 text-sm font-medium rounded-md text-gray-400 hover:text-white transition-all">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="tab-content active">
+            <form onsubmit="handleLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1 ml-1" for="login-email">Email Address</label>
+                    <div class="input-field rounded-lg flex items-center px-4 py-3">
+                        <i class="fas fa-envelope text-gray-400 mr-3"></i>
+                        <input type="email" id="login-email" required class="bg-transparent border-none outline-none w-full text-white placeholder-gray-500 text-sm" placeholder="john@example.com">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1 ml-1 pr-1">
+                        <label class="block text-xs font-medium text-gray-400" for="login-password">Password</label>
+                        <a href="#" class="text-xs text-brand-blue hover:text-white transition-colors">Forgot?</a>
+                    </div>
+                    <div class="input-field rounded-lg flex items-center px-4 py-3">
+                        <i class="fas fa-lock text-gray-400 mr-3"></i>
+                        <input type="password" id="login-password" required class="bg-transparent border-none outline-none w-full text-white placeholder-gray-500 text-sm" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div id="login-error" class="text-red-400 text-xs hidden">Invalid credentials. Please try again.</div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-blue to-brand-green text-brand-dark font-bold py-3 rounded-lg mt-4 hover:shadow-[0_0_15px_rgba(0,225,255,0.4)] transition-all transform hover:-translate-y-0.5">
+                    Access Account
+                </button>
+            </form>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signup-form" class="tab-content">
+            <form onsubmit="handleSignup(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1 ml-1" for="signup-first">First Name</label>
+                        <div class="input-field rounded-lg flex items-center px-4 py-2.5">
+                            <input type="text" id="signup-first" required class="bg-transparent border-none outline-none w-full text-white placeholder-gray-500 text-sm" placeholder="John">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1 ml-1" for="signup-last">Last Name</label>
+                        <div class="input-field rounded-lg flex items-center px-4 py-2.5">
+                            <input type="text" id="signup-last" required class="bg-transparent border-none outline-none w-full text-white placeholder-gray-500 text-sm" placeholder="Doe">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1 ml-1" for="signup-email">Email Address</label>
+                    <div class="input-field rounded-lg flex items-center px-4 py-2.5">
+                        <i class="fas fa-envelope text-gray-400 mr-3 text-sm"></i>
+                        <input type="email" id="signup-email" required class="bg-transparent border-none outline-none w-full text-white placeholder-gray-500 text-sm" placeholder="john@example.com">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1 ml-1" for="signup-password">Password</label>
+                    <div class="input-field rounded-lg flex items-center px-4 py-2.5">
+                        <i class="fas fa-lock text-gray-400 mr-3 text-sm"></i>
+                        <input type="password" id="signup-password" required minlength="8" class="bg-transparent border-none outline-none w-full text-white placeholder-gray-500 text-sm" placeholder="Min. 8 characters">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1 ml-1" for="signup-country">Country of Residence</label>
+                    <div class="input-field rounded-lg flex items-center px-4 py-2.5 relative">
+                        <i class="fas fa-globe text-gray-400 mr-3 text-sm"></i>
+                        <select id="signup-country" required class="bg-transparent border-none outline-none w-full text-white text-sm appearance-none cursor-pointer z-10 [&>option]:bg-gray-800">
+                            <option value="" disabled selected class="text-gray-500">Select Country</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="uae">United Arab Emirates</option>
+                            <option value="ca">Canada</option>
+                            <option value="au">Australia</option>
+                            <option value="ch">Switzerland</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-4 text-gray-500 text-xs pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <div class="flex items-start mt-4 mb-2">
+                    <input type="checkbox" id="terms" required class="mt-1 w-4 h-4 rounded border-gray-600 bg-gray-700 text-brand-blue focus:ring-brand-blue focus:ring-offset-gray-800">
+                    <label for="terms" class="ml-2 text-xs text-gray-400">
+                        I agree to the <a href="#" class="text-brand-blue hover:underline">Terms of Service</a> and <a href="#" class="text-brand-blue hover:underline">Privacy Policy</a>.
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full bg-white text-brand-dark font-bold py-3 rounded-lg hover:bg-gray-200 transition-all transform hover:-translate-y-0.5">
+                    Create Account
+                </button>
+            </form>
+        </div>
+        
+    </div>
+
+    <script>
+        // Check URL for signup parameter to auto-switch tabs
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('signup') === 'true') {
+                switchTab('signup');
+            }
+        };
+
+        function switchTab(tab) {
+            // Update buttons
+            const loginBtn = document.getElementById('tab-login');
+            const signupBtn = document.getElementById('tab-signup');
+            
+            // Update forms
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+
+            if(tab === 'login') {
+                loginBtn.className = 'flex-1 py-2 text-sm font-medium rounded-md bg-brand-input text-white shadow transition-all';
+                signupBtn.className = 'flex-1 py-2 text-sm font-medium rounded-md text-gray-400 hover:text-white transition-all';
+                
+                // Animate
+                signupForm.classList.remove('active');
+                setTimeout(() => loginForm.classList.add('active'), 50);
+            } else {
+                signupBtn.className = 'flex-1 py-2 text-sm font-medium rounded-md bg-brand-input text-white shadow transition-all';
+                loginBtn.className = 'flex-1 py-2 text-sm font-medium rounded-md text-gray-400 hover:text-white transition-all';
+                
+                // Animate
+                loginForm.classList.remove('active');
+                setTimeout(() => signupForm.classList.add('active'), 50);
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+            
+            // Simulate API logic
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Profile...';
+            
+            // Simulate API logic
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
